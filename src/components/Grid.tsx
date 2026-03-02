@@ -46,9 +46,13 @@ export function Grid({ board, queens, invalidQueens, onToggleQueen }: GridProps)
     };
 
     return (
-        <div className="w-full max-w-[400px] aspect-square bg-slate-900 rounded-xl overflow-hidden shadow-2xl relative">
+        <div className="w-full max-w-[400px] aspect-square rounded-xl shadow-2xl relative border-4 border-slate-800 vinyl-texture overflow-hidden">
+            {/* Inner record label circle decoration (optional, but let's keep it simple) */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                <div className="w-1/3 aspect-square rounded-full border-[20px] border-black/40 blur-sm"></div>
+            </div>
             <div
-                className="absolute inset-0 grid"
+                className="absolute inset-0 grid backdrop-blur-[2px]"
                 style={{
                     gridTemplateColumns: `repeat(${board.length}, minmax(0, 1fr))`,
                     gridTemplateRows: `repeat(${board.length}, minmax(0, 1fr))`

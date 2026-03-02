@@ -8,15 +8,20 @@ export default {
         extend: {
             colors: {
                 region: {
-                    0: '#f1f5f9', // slate-100
-                    1: '#e0e7ff', // indigo-100
-                    2: '#dbeafe', // blue-100
-                    3: '#e0f2fe', // sky-100
-                    4: '#ecfdf5', // emerald-100
-                    5: '#fef3c7', // amber-100
-                    6: '#ffedd5', // orange-100
-                    7: '#fce7f3', // pink-100
-                    8: '#f3e8ff', // purple-100
+                    0: '#F2E8CF', // Canvas/Cream
+                    1: '#A7C957', // Vintage Green
+                    2: '#6A994E', // Deep Green
+                    3: '#BC4749', // Record Label Red
+                    4: '#F4A261', // Soft Orange
+                    5: '#E9C46A', // Mustard Yellow
+                    6: '#2A9D8F', // Teal
+                    7: '#264653', // Deep Slate Blue
+                    8: '#8AB17D', // Sage
+                },
+                vinyl: {
+                    base: '#111111',
+                    groove: '#1a1a1a',
+                    highlight: '#2a2a2a'
                 }
             }
         },

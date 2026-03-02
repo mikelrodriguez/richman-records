@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Grid } from './Grid';
 import { useGameState } from '../hooks/useGameState';
-import { Crown, Sparkles, AlertCircle, ArrowRight, Play } from 'lucide-react';
+import { Mic, Music, AlertCircle, ArrowRight, Play } from 'lucide-react';
+import { playPlunk } from '../lib/audio';
 
 const TUTORIAL_REGIONS = [
     [0, 0, 1, 1],
@@ -20,12 +21,17 @@ function TutorialGame({ onComplete }: { onComplete: () => void }) {
         }
     }, [isWin, onComplete]);
 
+    const handleToggle = (row: number, col: number) => {
+        playPlunk();
+        toggleQueen(row, col);
+    };
+
     return (
         <div className="flex flex-col items-center justify-center w-full max-w-[300px]">
             <div className="mb-6 text-center">
                 <h3 className="text-xl font-bold text-white mb-2">Try it out!</h3>
                 <p className="text-sm text-slate-300">
-                    Place exactly 4 Queens safely. If they highlight red, they are touching or sharing a row/col/region!
+                    Place exactly 4 Lead Singers so none clash. If they highlight red, their vocal spaces overlap!
                 </p>
             </div>
 
@@ -34,7 +40,7 @@ function TutorialGame({ onComplete }: { onComplete: () => void }) {
                     board={board}
                     queens={queens}
                     invalidQueens={invalidQueens}
-                    onToggleQueen={toggleQueen}
+                    onToggleQueen={handleToggle}
                 />
             </div>
 
@@ -46,7 +52,7 @@ function TutorialGame({ onComplete }: { onComplete: () => void }) {
                     Reset Board
                 </button>
                 <div className="text-sm font-bold text-indigo-400">
-                    {queens.length} / 4 Queens
+                    {queens.length} / 4 Singers
                 </div>
             </div>
         </div>
@@ -58,22 +64,22 @@ export function Tutorial({ onFinish }: { onFinish: () => void }) {
 
     const steps = [
         {
-            icon: <Crown className="w-12 h-12 text-yellow-400 mb-4" />,
-            title: "Welcome to Queens",
-            content: "A beautiful logic puzzle where your goal is to place Queens on the board safely."
+            icon: <Mic className="w-12 h-12 text-yellow-400 mb-4" />,
+            title: "Welcome to Richman Records",
+            content: "A musical logic puzzle where your goal is to place Lead Singers on their tracks perfectly."
         },
         {
             icon: <AlertCircle className="w-12 h-12 text-indigo-400 mb-4" />,
-            title: "The Golden Rules",
-            content: "1. Exactly one Queen per row, column, and colored region.\n2. No two Queens can touch each other, not even diagonally."
+            title: "Harmony over Dissonance",
+            content: "1. Exactly one Singer per track (row), column, and colored vocal space.\n2. Singers need space—no two can touch, not even diagonally."
         },
         {
             interactive: true
         },
         {
-            icon: <Sparkles className="w-12 h-12 text-emerald-400 mb-4" />,
-            title: "You got it!",
-            content: "You're now ready to tackle the Daily Puzzle. Good luck!"
+            icon: <Music className="w-12 h-12 text-emerald-400 mb-4" />,
+            title: "Beautiful!",
+            content: "You've successfully cut the record! You're ready to tackle the full puzzle. Good luck, Nancy!"
         }
     ];
 

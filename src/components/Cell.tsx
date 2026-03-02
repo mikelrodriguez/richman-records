@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Crown } from 'lucide-react';
+import { Mic } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -48,32 +48,29 @@ export function Cell({ row, col, region, hasQueen, isError, onToggle, borderClas
                 'relative w-full h-full flex items-center justify-center select-none',
                 'border-slate-800 transition-colors',
                 REGION_COLORS[region] || 'bg-white',
+                // Glassmorphism and inner light base
+                'backdrop-blur-md bg-opacity-90 inner-light',
                 borderClasses, // Custom thick borders for regions
-                isError && hasQueen ? 'bg-red-400' : '' // Flash red if error
+                isError && hasQueen ? 'bg-red-500 bg-opacity-90' : '', // Flash red if error
+                hasQueen && !isError ? 'inner-light-active' : ''
             )}
             aria-label={`Cell at row ${row}, col ${col}, region ${region}`}
         >
-            {/* If error on empty cell (e.g. sharing row), we could put a small red dot, but standard is just full red cell or error icon.
-          Actually, let's make the background slightly red if it's an error but no queen? No, usually only queens show error.
-          We will only show error if it has a queen and is in an error state. Wait, the validation logic only adds queens to invalidQueens set.
-      */}
             {hasQueen && (
                 <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0, opacity: 0 }}
                 >
-                    <Crown
+                    <Mic
                         className={cn(
                             "w-6 h-6 sm:w-8 sm:h-8 drop-shadow-md",
-                            isError ? "text-red-900" : "text-slate-900"
+                            isError ? "text-slate-100" : "text-slate-900"
                         )}
                         strokeWidth={2.5}
                     />
                 </motion.div>
             )}
-
-            {/* Optional: Add a subtle overlay if it's conflicting but empty? No, the hook only returns invalid queens. */}
         </motion.button>
     );
 }
