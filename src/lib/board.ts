@@ -36,6 +36,113 @@ export function generateBoard(customRegions?: number[][]): CellData[][] {
     return board;
 }
 
+function getRandomQueens(size: number): { r: number, c: number }[] {
+    const cols = new Set<number>();
+    const queens: { r: number, c: number }[] = [];
+
+    function solve(r: number): boolean {
+        if (r === size) return true;
+        const availableCols = [];
+        for (let c = 0; c < size; c++) availableCols.push(c);
+        availableCols.sort(() => Math.random() - 0.5); // shuffle
+
+        for (const c of availableCols) {
+            if (cols.has(c)) continue;
+            let canPlace = true;
+            for (const q of queens) {
+                if (Math.abs(q.r - r) <= 1 && Math.abs(q.c - c) <= 1) {
+                    canPlace = false; break;
+                }
+            }
+            if (canPlace) {
+                cols.add(c);
+                queens.push({ r, c });
+                if (solve(r + 1)) return true;
+                queens.pop();
+                cols.delete(c);
+            }
+        }
+        return false;
+    }
+
+    let success = false;
+    let attempts = 0;
+    while (!success && attempts < 100) {
+        queens.length = 0;
+        cols.clear();
+        success = solve(0);
+        attempts++;
+    }
+    return queens;
+}
+
+export function generateRandomRegions(size: number): number[][] {
+    const queens = getRandomQueens(size);
+    if (queens.length < size) {
+        return INITIAL_REGIONS;
+    }
+
+    const regions: number[][] = Array(size).fill(0).map(() => Array(size).fill(-1));
+    queens.forEach((q, idx) => {
+        regions[q.r][q.c] = idx;
+    });
+
+    let unassigned = size * size - size;
+    let attempts = 0;
+
+    // Flood fill regions from the seeded queens
+    while (unassigned > 0 && attempts < 1000) {
+        attempts++;
+        const regionToExpand = Math.floor(Math.random() * size);
+
+        const boundary: { r: number, c: number }[] = [];
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                if (regions[r][c] === regionToExpand) {
+                    const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                    for (const [dr, dc] of dirs) {
+                        const nr = r + dr;
+                        const nc = c + dc;
+                        if (nr >= 0 && nr < size && nc >= 0 && nc < size && regions[nr][nc] === -1) {
+                            boundary.push({ r: nr, c: nc });
+                        }
+                    }
+                }
+            }
+        }
+
+        if (boundary.length > 0) {
+            const cell = boundary[Math.floor(Math.random() * boundary.length)];
+            regions[cell.r][cell.c] = regionToExpand;
+            unassigned--;
+        }
+    }
+
+    // Sweep for any trapped unassigned cells and attach them to a neighbor
+    for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+            if (regions[r][c] === -1) {
+                const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (const [dr, dc] of dirs) {
+                    const nr = r + dr;
+                    const nc = c + dc;
+                    if (nr >= 0 && nr < size && nc >= 0 && nc < size && regions[nr][nc] !== -1) {
+                        regions[r][c] = regions[nr][nc];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return regions;
+}
+
+export function generateRandomBoardData(size: number = BOARD_SIZE): CellData[][] {
+    const customRegions = generateRandomRegions(size);
+    return generateBoard(customRegions);
+}
+
 export function checkValidations(
     queens: { row: number; col: number }[],
     board: CellData[][]

@@ -1,8 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
-import { generateBoard, checkValidations } from '../lib/board';
+import { generateBoard, checkValidations, generateRandomBoardData, CellData } from '../lib/board';
 
 export function useGameState(initialRegions?: number[][]) {
-    const [board] = useState(() => generateBoard(initialRegions));
+    const [board, setBoard] = useState<CellData[][]>(() => {
+        if (initialRegions) return generateBoard(initialRegions);
+        return generateRandomBoardData();
+    });
     const [queens, setQueens] = useState<{ row: number, col: number }[]>([]);
     const [invalidQueens, setInvalidQueens] = useState<Set<string>>(new Set());
     const [isWin, setIsWin] = useState(false);
@@ -54,7 +57,11 @@ export function useGameState(initialRegions?: number[][]) {
         setIsWin(false);
         setTimeElapsed(0);
         setInvalidQueens(new Set());
-    }, []);
+        // For the main game, generate a new random board
+        if (!initialRegions) {
+            setBoard(generateRandomBoardData());
+        }
+    }, [initialRegions]);
 
     return {
         board,
