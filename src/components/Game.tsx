@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RotateCcw, Clock, Music } from 'lucide-react';
+import { RotateCcw, Clock, Music, HelpCircle } from 'lucide-react';
 import { Grid } from './Grid';
 import { Tutorial } from './Tutorial';
 import { useGameState } from '../hooks/useGameState';
@@ -53,6 +53,13 @@ export function Game() {
                         </div>
 
                         <div className="flex bg-slate-900/50 backdrop-blur-md p-1 rounded-xl border border-white/5 space-x-1 shadow-inner">
+                            <button
+                                onClick={() => setShowTutorial(true)}
+                                className="p-2.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 hover:text-sky-200 rounded-lg border border-sky-500/20 transition-all duration-300 active:scale-95 flex items-center justify-center group"
+                                aria-label="Show Rules"
+                            >
+                                <HelpCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                            </button>
                             <div className="flex items-center space-x-2 text-amber-200/90 font-mono text-lg bg-black/40 px-4 py-2 rounded-lg border border-white/5 shadow-md">
                                 <Clock className="w-4 h-4 text-emerald-400" />
                                 <span>{formatTime(timeElapsed)}</span>
@@ -148,9 +155,12 @@ export function Game() {
             {showTutorial && (
                 <Tutorial
                     onFinish={() => {
+                        const isFirstTime = localStorage.getItem('hasSeenTutorial') !== 'true';
                         localStorage.setItem('hasSeenTutorial', 'true');
                         setShowTutorial(false);
-                        reset();
+                        if (isFirstTime) {
+                            reset();
+                        }
                     }}
                 />
             )}
